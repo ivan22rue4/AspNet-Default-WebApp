@@ -13,14 +13,22 @@ using WebApplication.Models;
 using WebApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace WebApplication
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -45,6 +53,14 @@ namespace WebApplication
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
 
+            var basePath = PlatformServices.Default.Application.ApplicationBasePath;
+            //Set the comments path for the swagger json and ui.
+            var xmlPath = Path.Combine(basePath, "DefaultWebApp.xml");
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new Info { Title = "DefaultWebApp", Version = "v1" });
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -63,6 +79,12 @@ namespace WebApplication
             }
 
             app.UseStaticFiles();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "DefaultWebApp V1");
+            });
 
             app.UseAuthentication();
 
