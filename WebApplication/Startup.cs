@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
+using Swashbuckle.AspNetCore.Swagger;
+using System.IO;
 using WebApplication.Data;
 using WebApplication.Models;
 using WebApplication.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Swashbuckle.AspNetCore.Swagger;
-using System.IO;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace WebApplication
 {
@@ -56,7 +52,8 @@ namespace WebApplication
             var basePath = PlatformServices.Default.Application.ApplicationBasePath;
             //Set the comments path for the swagger json and ui.
             var xmlPath = Path.Combine(basePath, "DefaultWebApp.xml");
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new Info { Title = "DefaultWebApp", Version = "v1" });
                 c.IncludeXmlComments(xmlPath);
             });
@@ -82,7 +79,8 @@ namespace WebApplication
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c => {
+            app.UseSwaggerUI(c =>
+            {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "DefaultWebApp V1");
             });
 
