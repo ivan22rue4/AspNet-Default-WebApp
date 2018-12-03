@@ -12,6 +12,7 @@ using System.IO;
 using WebApplication.Data;
 using WebApplication.Models;
 using WebApplication.Services;
+using System.Diagnostics;
 
 namespace WebApplication
 {
@@ -65,6 +66,7 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            Debug.WriteLine("Configure Start");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
